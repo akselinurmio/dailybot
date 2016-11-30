@@ -1,0 +1,11 @@
+{
+  "name": "dailybot",
+  "version": "0.0.0",
+  "description": "Posts daily message to Slack",
+  "main": "index.js",
+  "author": "Akseli Nurmio <akseli@nurmio.fi>",
+  "dependencies": {
+    "@slack/client": "^3.6.1",
+    "node-schedule": "^1.2.0"
+  }
+}
