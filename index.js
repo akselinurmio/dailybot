@@ -11,7 +11,7 @@ function sendMessage(message) {
   return new Promise(function (resolve, reject) {
     return webhook.send(message, function (err, res) {
       if (err) return reject(err)
-      console.log('Message sent: ', res)
+      console.log('Message sent!')
       return resolve(res)
     })
   })
@@ -48,7 +48,7 @@ function saveLines(file, array) {
     return fs.writeFile(file, data, 'utf8', function (err) {
       if (err) return reject(err)
       console.log('Saved data to ' + file)
-      return resolve(data)
+      return resolve()
     })
   })
 }
@@ -57,16 +57,19 @@ function getRandomFromArray(array) {
   return new Promise(function (resolve, reject) {
     try {
       const index = Math.floor(Math.random()*array.length)
-      return resolve(array[index], index)
+      return resolve(array[index])
     } catch (err) {
       return reject(err)
     }
   })
 }
 
-function removeItemFromArray(array, index) {
+function deleteFromArray(array, item) {
   return new Promise(function (resolve, reject) {
     try {
+      const index = array.indexOf(item)
+      if (index < 0)
+        throw new Error('There is no item called "' + item + '"')
       array.splice(index, 1)
       return resolve(array)
     } catch (err) {
@@ -78,7 +81,7 @@ function removeItemFromArray(array, index) {
 function compose(seed) {
   return new Promise(function(resolve, reject) {
     try {
-      const wrapper = 'Here it is. Today\'s most awaited moment. The daily UI challenge: %%.'
+      const wrapper = 'It\'s %% day!'
       return resolve(wrapper.replace(/%%/, '*'+seed+'*'))
     } catch (err) {
       return reject(err)
@@ -88,7 +91,7 @@ function compose(seed) {
     //   'Welcome to the Hydraulic UI challenge, for today\'s extra content we have %%.',
     //   '_... saxophone playing ..._ here today, and only today, we present you: %%!',
     //   'Today\'s playground is %%.',
-    //   ''
+    //   'Here it comes. R U fckn readyy?? %%!'
     // ]
     // const weekend = [
     //   'Here\'s some action for your lame ass weekend, build a/an %%!',
@@ -114,14 +117,17 @@ function compose(seed) {
   })
 }
 
-function setSchedule(cronTime) {
-  return schedule.scheduleJob(cronTime, function () {
-    return getLines(filename)
-      .then(getRandomFromArray)
-      .then(compose)
-      .then(sendMessage)
-      .catch(console.error)
-  })
+function main() {
+  const lines = getLines(filename).catch(console.error)
+  const todays = lines.then(getRandomFromArray).catch(console.error)
+  const msg = todays.then(compose).catch(console.error)
+  const send = msg.then(sendMessage).catch(console.error)
+  const removal = Promise.all([lines, todays, send]).then(v => deleteFromArray(v[0], v[1]))
+    .then(v => saveLines(filename, v)).catch(console.error)
 }
 
-setSchedule('0 0 0 * * *')
+function setSchedule(cronTime) {
+  return schedule.scheduleJob(cronTime, main)
+}
+
+setSchedule('0 0 0 * 12 *')
