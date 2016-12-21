@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Akseli Nurmio <akseli@nurmio.fi>",
   "dependencies": {
-    "@slack/client": "^3.6.1",
-    "node-schedule": "^1.2.0"
+    "@slack/client": "3.6.1",
+    "node-schedule": "1.2.0"
   }
 }
