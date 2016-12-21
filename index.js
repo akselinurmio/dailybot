@@ -81,39 +81,31 @@ function deleteFromArray(array, item) {
 function compose(seed) {
   return new Promise(function(resolve, reject) {
     try {
-      const wrapper = 'It\'s %% day!'
+      const ordinary = [
+        "Welcome to the Hydraulic UI challenge, for today's extra content we have %%.",
+        '_... saxophone playing ..._ today, and only today, we present you: %%!',
+        "Today's play is %%.",
+        'Here it comes. R U fckn readyy?? %%!',
+        'Please enjoy your day, mah bro, with this Divi UI challenge: %%.'
+      ]
+      const time = new Date()
+      let wrapper
+
+      if (time.getMonth() === 11 && time.getDate() === 23)
+        wrapper = "Tomorrow is joulu eve, but first: eve's eve's UI challenge is for %%!"
+      else if (time.getMonth() === 11 && time.getDate() === 24)
+        wrapper = "It's joulu eve, folks! Here's today's challenge in case some one else is making a joulu for you: %%. Merry joulu!"
+      else if (time.getMonth() === 11 && time.getDate() === 25)
+        wrapper = "Relax on this joulu day with %%!"
+      else if (time.getMonth() === 11 && time.getDate() === 31)
+        wrapper = "Happy new year's eve everyone! This is the last UI challenge for this year: %%. C U around!"
+      else
+        wrapper = ordinary[Math.floor(Math.random()*ordinary.length)]
+
       return resolve(wrapper.replace(/%%/, '*'+seed+'*'))
     } catch (err) {
       return reject(err)
     }
-
-    // const ordinary = [
-    //   'Welcome to the Hydraulic UI challenge, for today\'s extra content we have %%.',
-    //   '_... saxophone playing ..._ here today, and only today, we present you: %%!',
-    //   'Today\'s playground is %%.',
-    //   'Here it comes. R U fckn readyy?? %%!'
-    // ]
-    // const weekend = [
-    //   'Here\'s some action for your lame ass weekend, build a/an %%!',
-    //   'Please enjoy your weekend, mah bro, with this daily Divi UI challenge: %%.'
-    // ]
-    //
-    // let wrapper
-    //
-    // try {
-    //   // Pick case based on weekday
-    //   switch (new Date().getDay()) {
-    //     case 5:
-    //     case 6:
-    //     case 0:
-    //       wrapper = getRandomFromArray(weekend)
-    //       break;
-    //     default:
-    //       wrapper = getRandomFromArray(ordinary)
-    //   }
-    // } catch (err) {
-    //   return reject(err)
-    // }
   })
 }
 
